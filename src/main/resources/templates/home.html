@@ -1,0 +1,38 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	  layout:decorator="layout/base">
+<body>
+
+<!--사용자 CSS 추가 -->
+<th:block layout:fragment="css">
+
+</th:block>
+<!-- 사용자 js 추가 -->
+<th:block layout:fragment="script">
+
+	<script th:inline="javascript">
+
+	</script>
+</th:block>
+
+
+
+<div layout:fragment="content">
+ <div class="container">
+	 <div class="jumbotron">
+		 <h1>SpringBoot Tutorial</h1>
+		 <p>Jpub Java webService</p>
+		 <div sec:authorize="isAuthenticated()">
+			 <span sec:authentication="name">userName</span>
+			 role:<span sec:authentication="principal.authorities"></span>
+			<a th:href="@{/logout}">sign out</a>
+		</div>
+	 </div>
+ </div>
+ </div>
+
+</div>
+<!--  fragmentsment -->
+</body>
+</html>

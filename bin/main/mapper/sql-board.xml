@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board.board.mapper.BoardMapper">
+	<select id="selectBoardList" resultType="board.board.dto.BoardDto">
+		<![CDATA[
+			SELECT
+				board_idx,
+				title,
+				hit_cnt,
+				created_datetime /* Mysql 전용 DATE_FORMAT(created_datetime, '%Y.%m.%d %H:%i:%s') AS */
+			FROM
+				t_board
+			WHERE
+				1 = 1
+			ORDER BY board_idx DESC
+		]]>
+	</select>
+	
+	<insert id="insertBoard" parameterType="board.board.dto.BoardDto" useGeneratedKeys="true" keyProperty="boardIdx">
+		<![CDATA[
+			INSERT INTO t_board
+			(
+				title, 
+				contents, 
+				created_datetime, 
+				creator_id,
+				hit_cnt
+			) 
+			VALUES 
+			(
+				#{title}, 
+				#{contents}, 
+				NOW(), 
+				'admin'	
+				,0		
+			)
+		]]>
+	</insert>
+	
+	<select id="selectBoardDetail" parameterType="int" resultType="board.board.dto.BoardDto">
+		<![CDATA[
+			SELECT
+				board_idx,
+				title,
+				contents,
+				hit_cnt,
+				created_datetime, /* Mysql 전용 DATE_FORMAT(created_datetime, '%Y.%m.%d %H:%i:%s') AS */
+				creator_id
+			FROM
+				t_board
+			WHERE
+				board_idx = #{boardIdx}
+		]]>
+	</select>
+	
+	<update id="updateHitCount" parameterType="int">
+		<![CDATA[
+			UPDATE 
+				t_board 
+			SET 
+				hit_cnt = hit_cnt + 1 
+			WHERE 
+				board_idx = #{boardIdx}
+		]]>
+	</update>
+	
+	<update id="updateBoard" parameterType="board.board.dto.BoardDto">
+		<![CDATA[
+			UPDATE t_board SET 
+				title = #{title},
+				contents = #{contents},
+				updated_datetime = Now(),
+				updater_id = 'admin'
+			WHERE 
+				board_idx = #{boardIdx}
+		]]>
+	</update>
+	
+	<update id="deleteBoard" parameterType="int">
+		<![CDATA[
+			DELETE FROM t_board 
+			WHERE 
+				board_idx = #{boardIdx}
+		]]>
+	</update>
+	
+	<insert id="insertBoardFileList" parameterType="board.board.dto.BoardFileDto">
+		<![CDATA[
+			INSERT INTO t_file
+			(
+				board_idx,
+				original_file_name,
+				stored_file_path,
+				file_size,
+				creator_id,
+				created_datetime
+			)
+			VALUES
+		]]>
+		<foreach collection="list" item="item" separator=",">
+			(
+				#{item.boardIdx},
+				#{item.originalFileName},
+				#{item.storedFilePath},
+				#{item.fileSize},
+				'admin',
+				NOW()
+			)
+		</foreach>
+	</insert>
+	
+	<select id="selectBoardFileList" parameterType="int" resultType="board.board.dto.BoardFileDto">
+		<![CDATA[
+			SELECT
+				idx,
+				board_idx,
+				original_file_name,
+				file_size /* Mysql 전용 FORMAT(ROUND(file_size / 1024), 0) AS */
+			FROM
+				t_file
+			WHERE
+				board_idx = #{boardIdx}
+		]]>
+	</select>
+	
+	<select id="selectBoardFileInformation" parameterType="map" resultType="board.board.dto.BoardFileDto">
+		<![CDATA[
+			SELECT
+				original_file_name,
+				stored_file_path,
+				file_size
+			FROM
+				t_file
+			WHERE
+				idx = #{idx}
+				AND board_idx = #{boardIdx}
+		]]>
+	</select>
+</mapper>

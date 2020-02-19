@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	  layout:decorator="layout/base">
+<body>
+<div layout:fragment="content">
+<head>
+    <title>Spring Boot and Thymeleaf - 403 Error</title>
+</head>
+<div id="page-wrapper" >
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3 class="page-header">403 Error</h3>
+                <p>해당 페이지에 접근할 권한이 없습니다.</p>
+                <p th:text="'Sorry, ' + ${error}"></p>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+    </div>
+</div>
+</div>
+</body>
+</html>

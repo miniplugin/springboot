@@ -1,0 +1,30 @@
+package board;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
+
+@EnableJpaAuditing
+@EntityScan(
+		basePackageClasses = {Jsr310JpaConverters.class},
+		basePackages = {"board"})
+@SpringBootApplication(exclude={MultipartAutoConfiguration.class})
+public class BoardApplication {
+
+	/*
+	@Bean
+    public Java8TimeDialect java8TimeDialect() {
+        return new Java8TimeDialect();
+    }
+    */
+	
+	public static void main(String[] args) {
+		SpringApplication.run(BoardApplication.class, args);
+	}
+
+}

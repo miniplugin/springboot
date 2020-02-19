@@ -1,0 +1,119 @@
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	  layout:decorator="layout/base">
+<body>
+<!--사용자 CSS 추가 -->
+<th:block layout:fragment="css">
+	<link rel="stylesheet" th:href="@{/css/style.css}"/>
+	<link rel="stylesheet" href="/webjars/pen/0.2.3/pen.css" />
+	<style type="text/css">
+		#toolbar{margin-bottom:1em;position:inherit;left:20px;margin-top:5px;} 
+		#toolbar [class^="icon-"]:before, #toolbar [class*=" icon-"]:before{font-family:'pen'} 
+		#hinted{color:#1abf89;cursor:pointer;} 
+		#hinted.disabled{color:#666;} 
+		#hinted:before{content: '\MarkDown';} 
+		
+		.pen-icon {padding: 0 9.3px;}
+		.pen-menu {position: inherit; opacity: 0.8; border: -1px; height: 37px;}
+		.pen-menu:after {display: none;}
+		.pen p {font-family: Lora, 'Times New Roman', serif; font-size: 20px; color: #404040;}
+		.pen h1, h2, h3, h4, h5, h6 {
+			font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+			font-weight: 800;
+			margin-top: 20px;
+			margin-bottom: 10px;
+			line-height: 1.1;
+		}
+		.pen h1 {font-size: 36px;}
+		.pen h2 {font-size: 30px;}
+		.pen h3 {font-size: 24px;}
+		.pen h4 {font-size: 18px;}
+	</style>
+</th:block>
+<!-- 사용자 js 추가 -->
+<th:block layout:fragment="script">
+	<script src="/webjars/pen/0.2.3/pen.js"></script>
+	<script src="/webjars/pen/0.2.3/markdown.js"></script>
+	<script th:inline="javascript">
+	$(document).ready(function(){
+		// config
+		var options = {
+			toolbar : document.getElementById('custom-toolbar'),
+			editor : document.querySelector('[data-toggle="pen"]')
+		};
+		// create editor
+		var pen = window.pen = new Pen(options);
+		pen.focus();
+		document.querySelector('#hinted').addEventListener('click', function() {
+			var pen = document.querySelector('.pen')
+			if (pen.classList.contains('hinted')) {
+				pen.classList.remove('hinted');
+				this.classList.add('disabled');
+			} else {
+				pen.classList.add('hinted');
+				this.classList.remove('disabled');
+			}
+		});
+		// 페이지 떠나는 메세지 사용중지
+		window.onbeforeunload = null;
+	});
+	</script>
+</th:block>
+<div layout:fragment="content">
+	<div class="container">
+	    <h2>게시글 등록</h2>
+	    <form id="frm" name="frm" method="post" onsubmit="$('#contents').val($('#pen').html()); pen.destroy();" action="/board/insertBoard.do" enctype="multipart/form-data">
+	    	<table class="board_detail">
+	    		<tr>
+	    			<td>제목</td>
+	    			<td><input type="text" id="title" name="title"/></td>
+	    		</tr>
+	    		<tr>
+	    			<td colspan="2">
+	    			<!-- Pen 웹에디터용 코드 추가 Start -->
+	    			<div id="toolbar"> 
+						<span id="hinted" class="icon-pre disabled" title="Toggle Markdown Hints">힌트</span> 
+					</div>
+					<div id="custom-toolbar" class="pen-menu pen-menu" style="display: block;margin:0 auto;">
+					  <i class="pen-icon icon-insertimage" data-action="insertimage"></i>
+					  <i class="pen-icon icon-blockquote" data-action="blockquote"></i>
+					  <i class="pen-icon icon-h1" data-action="h1"></i>
+					  <i class="pen-icon icon-h2" data-action="h2"></i>
+					  <i class="pen-icon icon-h3" data-action="h3"></i>
+					  <i class="pen-icon icon-p active" data-action="p"></i>
+					  <i class="pen-icon icon-code" data-action="code"></i>
+					  <i class="pen-icon icon-insertorderedlist" data-action="insertorderedlist"></i>
+					  <i class="pen-icon icon-insertunorderedlist" data-action="insertunorderedlist"></i>
+					  <i class="pen-icon icon-inserthorizontalrule" data-action="inserthorizontalrule"></i>
+					  <i class="pen-icon icon-indent" data-action="indent"></i>
+					  <i class="pen-icon icon-outdent" data-action="outdent"></i>
+					  <i class="pen-icon icon-bold" data-action="bold"></i>
+					  <i class="pen-icon icon-italic" data-action="italic"></i>
+					  <i class="pen-icon icon-underline" data-action="underline"></i>
+					  <i class="pen-icon icon-createlink" data-action="createlink"></i>
+					</div>
+					<!-- Pen 웹에디터용 코드 추가 End -->
+	    				<input type="hidden" name="contents" id="contents">
+		    			<!-- <textarea id="contents" name="contents"></textarea> -->
+		    			<hr style="margin-top: 12px; border-top: 1px solid #999;">
+						<div data-toggle="pen" data-placeholder="Contents" id="pen" style="min-height: 200px;"></div>
+						<hr>
+	    			</td>
+	    		</tr>
+	    	</table>
+	    	<input type="file" id="files" name="files" multiple="multiple">
+	    	<input type="submit" id="submit" value="저장" class="btn">
+	    </form>
+	    <a href="#this" id="list" class="btn">목록으로</a>
+    </div>
+    <script type="text/javascript">
+		$(document).ready(function(){
+			$("#list").on("click", function(){
+				location.href = "/board/openBoardList.do";
+			});
+		});
+	</script>
+</div>
+</body>
+</html>
